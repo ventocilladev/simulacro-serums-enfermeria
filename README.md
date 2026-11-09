@@ -1,10 +1,10 @@
 # Rumbo al SERUMS
 
-Simulacro de práctica para enfermería, adaptable a celular y laptop. Tiene dos modalidades fijas: 50 preguntas en 40 minutos y 100 preguntas en 90 minutos. Incluye preguntas originales de cuatro alternativas, navegación, marcas para revisar, guardado local y explicaciones al finalizar.
+Simulacro de práctica para enfermería, adaptable a celular y laptop. Tiene un banco de 300 preguntas y dos modalidades: 60 preguntas en 30 minutos y 100 preguntas en 90 minutos. Incluye cuatro alternativas, navegación, marcas para revisar, guardado local y explicaciones al finalizar.
 
 ## Contenido
 
-Las preguntas se elaboraron a partir del balotario compartido para el proyecto. Los dos exámenes anteriores sirvieron como referencia del formato de casos breves y cuatro alternativas. Las áreas se mezclan en ambos exámenes. No es un examen oficial ni reproduce íntegramente el material entregado.
+Las preguntas se elaboraron a partir del balotario compartido para el proyecto. Los dos exámenes anteriores sirvieron como referencia del formato de casos breves y cuatro alternativas. Cada examen selecciona preguntas de las áreas del balotario y evita repetir las del intento inmediatamente anterior. No es un examen oficial ni reproduce íntegramente el material entregado.
 
 ## Uso
 
