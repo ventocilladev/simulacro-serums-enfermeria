@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const KEY = 'serums-simulacro-v4';
+  const KEY = 'serums-simulacro-v5';
   const LETTERS = ['A', 'B', 'C', 'D'];
   const app = document.getElementById('app');
   const bank = window.QUESTIONS.map((q, id) => ({ id, category: q[0], stem: q[1], choices: q[2], correct: q[3], why: q[4] }));
