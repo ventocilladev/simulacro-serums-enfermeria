@@ -22,6 +22,10 @@
   }
   function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
   function formatTime(seconds) { const m = Math.floor(Math.max(0, seconds) / 60); return `${String(m).padStart(2, '0')}:${String(Math.max(0, seconds) % 60).padStart(2, '0')}`; }
+  function showQuestion() {
+    const panel = document.querySelector('.exam-main');
+    if (panel) window.scrollTo({ top: Math.max(0, panel.getBoundingClientRect().top + window.scrollY - 8), behavior: 'instant' });
+  }
   function remaining() { return Math.max(0, state.minutes * 60 - Math.floor((Date.now() - state.started) / 1000)); }
   function stopClock() { if (tick) clearInterval(tick); tick = null; }
   function clock() {
@@ -49,7 +53,7 @@
     if (![60, 100].includes(count) || bank.length < count) return;
     const ids = selectedIds(count);
     state = { ids, answers: ids.map(() => null), flagged: ids.map(() => false), orders: ids.map(() => shuffle([0, 1, 2, 3])), started: Date.now(), minutes: count === 60 ? 30 : 90, finished: false };
-    current = 0; save(); renderExam(); window.scrollTo(0, 0);
+    current = 0; save(); renderExam(); showQuestion();
   }
   function home() {
     stopClock();
@@ -58,7 +62,7 @@
     app.innerHTML = `<section class="hero"><div class="hero-copy"><span class="eyebrow">SIMULACRO SERUMS · ENFERMERÍA</span><h1>De tu amorshito<br><em>para ti.</em></h1><p class="dedication">Tú puedes. Vamos por ese 20 de nota.</p></div><div class="hero-art" aria-hidden="true"><div class="art-card"><span class="art-kicker">SIMULACRO</span><div class="art-number">01<span>/ 60</span></div><div class="art-lines"><i></i><i></i><i></i></div><div class="art-choice selected">A <span></span></div><div class="art-choice">B <span></span></div><div class="art-choice">C <span></span></div></div></div></section>
     <section class="setup card"><div class="section-title"><div><span class="eyebrow dark">ELIGE TU EXAMEN</span><h2>Simulacro</h2></div><span class="sparkle" aria-hidden="true">✦</span></div><div class="exam-choices"><button class="exam-choice" data-count="60"><span class="choice-number">60</span><span class="choice-copy"><strong>60 preguntas</strong><small>30 minutos</small></span><span class="choice-arrow">→</span></button><button class="exam-choice" data-count="100"><span class="choice-number">100</span><span class="choice-copy"><strong>100 preguntas</strong><small>90 minutos</small></span><span class="choice-arrow">→</span></button></div>${resume ? '<button class="secondary resume-button" id="resume">Continuar examen guardado</button>' : ''}${completed ? '<button class="secondary resume-button" id="last">Ver último resultado</button>' : ''}<p class="helper">El tiempo comienza al iniciar. Tus respuestas se guardan en este navegador.</p></section>`;
     document.querySelectorAll('[data-count]').forEach(el => el.onclick = () => { if (resume && !confirm('Hay un examen en curso. ¿Empezar otro y reemplazarlo?')) return; start(Number(el.dataset.count)); });
-    if (resume) document.getElementById('resume').onclick = () => { current = Math.max(0, state.answers.findIndex(a => a === null)); renderExam(); };
+    if (resume) document.getElementById('resume').onclick = () => { current = Math.max(0, state.answers.findIndex(a => a === null)); renderExam(); showQuestion(); };
     if (completed) document.getElementById('last').onclick = renderResults;
   }
   function renderExam() {
@@ -68,10 +72,10 @@
     const answered = state.answers.filter(a => a !== null).length; const selected = state.answers[current];
     app.innerHTML = `<div class="exam-layout"><section class="exam-main"><div class="exam-head"><button class="text-button" id="exit">← Inicio</button><span class="exam-label">EXAMEN DE ${total} PREGUNTAS</span><span class="timer" aria-label="Tiempo restante">◷ <span id="clock">${formatTime(remaining())}</span></span></div><div class="progress-line"><span style="width:${answered / total * 100}%"></span></div><div class="question-meta"><span class="eyebrow dark">PREGUNTA ${current + 1} DE ${total}</span></div><h1 class="question-stem">${escape(q.stem)}</h1><fieldset class="options"><legend class="sr-only">Selecciona una respuesta</legend>${order.map((choiceIndex, displayIndex) => `<button type="button" class="option ${selected === choiceIndex ? 'chosen' : ''}" data-answer="${choiceIndex}" aria-pressed="${selected === choiceIndex}"><span class="option-letter">${LETTERS[displayIndex]}</span><span>${escape(q.choices[choiceIndex])}</span><span class="option-check">✓</span></button>`).join('')}</fieldset><div class="exam-actions"><button class="flag-button ${state.flagged[current] ? 'active' : ''}" id="flag">${state.flagged[current] ? '⚑ Marcada para revisar' : '⚑ Marcar para revisar'}</button><div class="step-actions"><button class="secondary" id="prev" ${current === 0 ? 'disabled' : ''}>Anterior</button><button class="primary" id="next">${current === total - 1 ? 'Revisar avance' : 'Siguiente →'}</button></div></div></section><aside class="exam-side"><div class="side-heading"><h2>Tu avance</h2><span>${answered}/${total}</span></div><p>Elige un número para ir a esa pregunta.</p><div class="question-grid">${state.ids.map((_, i) => `<button class="number ${i === current ? 'current' : ''} ${state.answers[i] !== null ? 'answered' : ''} ${state.flagged[i] ? 'flagged' : ''}" data-jump="${i}" aria-label="Pregunta ${i + 1}${state.answers[i] !== null ? ', respondida' : ''}">${i + 1}</button>`).join('')}</div><div class="legend"><span><i class="legend-answered"></i>Respondida</span><span><i class="legend-flagged"></i>Por revisar</span></div><button class="finish-link" id="finish">Finalizar simulacro →</button></aside></div>`;
     document.querySelectorAll('[data-answer]').forEach(el => el.onclick = () => { state.answers[current] = Number(el.dataset.answer); save(); renderExam(); });
-    document.querySelectorAll('[data-jump]').forEach(el => el.onclick = () => { current = Number(el.dataset.jump); renderExam(); window.scrollTo(0, 0); });
+    document.querySelectorAll('[data-jump]').forEach(el => el.onclick = () => { current = Number(el.dataset.jump); renderExam(); showQuestion(); });
     document.getElementById('flag').onclick = () => { state.flagged[current] = !state.flagged[current]; save(); renderExam(); };
-    document.getElementById('prev').onclick = () => { current--; renderExam(); window.scrollTo(0, 0); };
-    document.getElementById('next').onclick = () => { if (current < total - 1) { current++; renderExam(); window.scrollTo(0, 0); } else review(); };
+    document.getElementById('prev').onclick = () => { current--; renderExam(); showQuestion(); };
+    document.getElementById('next').onclick = () => { if (current < total - 1) { current++; renderExam(); showQuestion(); } else review(); };
     document.getElementById('finish').onclick = review; document.getElementById('exit').onclick = home; clock();
   }
   function review() {
