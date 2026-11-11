@@ -1,9 +1,9 @@
 (function () {
   'use strict';
-  const KEY = 'serums-simulacro-v5';
+  const KEY = 'serums-simulacro-v7';
   const LETTERS = ['A', 'B', 'C', 'D'];
   const app = document.getElementById('app');
-  const bank = window.QUESTIONS.map((q, id) => ({ id, category: q[0], stem: q[1], choices: q[2], correct: q[3], why: q[4] }));
+  const bank = window.QUESTIONS.map((q, id) => ({ id, category: q[0], stem: q[1], choices: q[2], correct: q[3], why: q[4], concept: q[5] ?? id }));
   let state = read();
   let current = 0;
   let tick;
@@ -34,18 +34,29 @@
   }
   function selectedIds(count) {
     const groups = new Map();
-    const previous = new Set(state?.ids || []);
-    bank.forEach(q => { if (!groups.has(q.category)) groups.set(q.category, []); if (!previous.has(q.id)) groups.get(q.category).push(q.id); });
+    const previous = new Set((state?.ids || []).map(id => bank[id]?.concept));
+    bank.forEach(q => { if (!groups.has(q.category)) groups.set(q.category, []); if (!previous.has(q.concept)) groups.get(q.category).push(q.id); });
     for (const [key, ids] of groups) groups.set(key, shuffle(ids));
-    const chosen = [];
+    const chosen = [], concepts = new Set();
     while (chosen.length < count) {
       let added = false;
       for (const category of shuffle([...groups.keys()])) {
         if (chosen.length === count) break;
-        const id = groups.get(category).pop();
-        if (id !== undefined) { chosen.push(id); added = true; }
+        const pool = groups.get(category);
+        let id;
+        while (pool.length && id === undefined) {
+          const candidate = pool.pop();
+          if (!concepts.has(bank[candidate].concept)) id = candidate;
+        }
+        if (id !== undefined) { chosen.push(id); concepts.add(bank[id].concept); added = true; }
       }
       if (!added) break;
+    }
+    if (chosen.length < count) {
+      for (const q of shuffle(bank)) {
+        if (chosen.length === count) break;
+        if (!concepts.has(q.concept)) { chosen.push(q.id); concepts.add(q.concept); }
+      }
     }
     return shuffle(chosen);
   }
@@ -60,7 +71,7 @@
     const resume = state && !state.finished;
     const completed = state && state.finished;
     app.innerHTML = `<section class="hero"><div class="hero-copy"><span class="eyebrow">SIMULACRO SERUMS · ENFERMERÍA</span><h1>De tu amorshito<br><em>para ti.</em></h1><p class="dedication">Tú puedes. Vamos por ese 20 de nota.</p></div><div class="hero-art" aria-hidden="true"><div class="art-card"><span class="art-kicker">SIMULACRO</span><div class="art-number">01<span>/ 60</span></div><div class="art-lines"><i></i><i></i><i></i></div><div class="art-choice selected">A <span></span></div><div class="art-choice">B <span></span></div><div class="art-choice">C <span></span></div></div></div></section>
-    <section class="setup card"><div class="section-title"><div><span class="eyebrow dark">ELIGE TU EXAMEN</span><h2>Simulacro</h2></div><span class="sparkle" aria-hidden="true">✦</span></div><div class="exam-choices"><button class="exam-choice" data-count="60"><span class="choice-number">60</span><span class="choice-copy"><strong>60 preguntas</strong><small>30 minutos</small></span><span class="choice-arrow">→</span></button><button class="exam-choice" data-count="100"><span class="choice-number">100</span><span class="choice-copy"><strong>100 preguntas</strong><small>90 minutos</small></span><span class="choice-arrow">→</span></button></div>${resume ? '<button class="secondary resume-button" id="resume">Continuar examen guardado</button>' : ''}${completed ? '<button class="secondary resume-button" id="last">Ver último resultado</button>' : ''}<p class="helper">El tiempo comienza al iniciar. Tus respuestas se guardan en este navegador.</p></section>`;
+    <section class="setup card"><div class="section-title"><div><span class="eyebrow dark">ELIGE TU EXAMEN</span><h2>Simulacro</h2></div><span class="sparkle" aria-hidden="true">✦</span></div><div class="exam-choices"><button class="exam-choice" data-count="60"><span class="choice-number">60</span><span class="choice-copy"><strong>60 preguntas</strong><small>30 minutos</small></span><span class="choice-arrow">→</span></button><button class="exam-choice" data-count="100"><span class="choice-number">100</span><span class="choice-copy"><strong>100 preguntas</strong><small>90 minutos</small></span><span class="choice-arrow">→</span></button></div>${resume ? '<button class="secondary resume-button" id="resume">Continuar examen guardado</button>' : ''}${completed ? '<button class="secondary resume-button" id="last">Ver último resultado</button>' : ''}<p class="helper">Banco de 1000 preguntas. El tiempo comienza al iniciar y tus respuestas se guardan en este navegador.</p></section>`;
     document.querySelectorAll('[data-count]').forEach(el => el.onclick = () => { if (resume && !confirm('Hay un examen en curso. ¿Empezar otro y reemplazarlo?')) return; start(Number(el.dataset.count)); });
     if (resume) document.getElementById('resume').onclick = () => { current = Math.max(0, state.answers.findIndex(a => a === null)); renderExam(); showQuestion(); };
     if (completed) document.getElementById('last').onclick = renderResults;

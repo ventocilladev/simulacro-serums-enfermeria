@@ -2,7 +2,7 @@
 
 - **Balotario:** `BALORARIO SERUM ORIGINAL.docx`, proporcionado por el usuario. No se publica el archivo original.
 - **Temario:** `8412657-3-enfermeria-temario-serums.pdf`, proporcionado por el usuario. Esquema de contenidos SERUMS 2026-II para enfermería; no se publica el archivo original.
-- **Formato de las preguntas:** `EXAMEN SERUM I.pdf` y `EXAMEN SERUM II.pdf`, proporcionados como ejemplos. Las preguntas de este sitio son originales.
+- **Formato de las preguntas:** `EXAMEN SERUM I.pdf`, `EXAMEN SERUM II.pdf`, `8489155-enfermeria.pdf` (SERUMS 2026-II) y `8053031-002-enfermeria.pdf` (SERUMS 2026-I), proporcionados como ejemplos. Sus preguntas no se publican en este sitio.
 
 El Word no desarrolla como apartado propio el tema **2.9 Prevención y control del cáncer**, que sí figura en el temario. Para ese apartado se consultaron fuentes oficiales del Ministerio de Salud del Perú:
 
