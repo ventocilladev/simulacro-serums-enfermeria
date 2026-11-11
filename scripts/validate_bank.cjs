@@ -17,8 +17,8 @@ function canonical(s){
 assert.equal(canonical('ASIS'),canonical('Análisis de situación de salud (ASIS)'));
 assert.equal(canonical('POI'),canonical('Plan Operativo Institucional'));
 assert.equal(canonical('Prueba molecular'),canonical('Prueba de diagnóstico rápido molecular'));
-assert.equal(questions.length,1000);
-assert.equal(new Set(questions.map(q=>q[1])).size,1000);
+assert.equal(questions.length,400);
+assert.equal(new Set(questions.map(q=>q[1])).size,400);
 for(const [i,q] of questions.entries()){
   assert.equal(q[2].length,4,`choice count ${i}`);
   assert.equal(new Set(q[2].map(canonical)).size,4,`equivalent choices ${i}`);
@@ -28,9 +28,7 @@ for(const [i,q] of questions.entries()){
 }
 const asis=questions[129];
 assert.equal(asis[2].filter(x=>canonical(x)===canonical('ASIS')).length,1,'ASIS screenshot regression');
-const expected=['1','1,6','100','15','2,08','5','4','90,91'];
-expected.forEach((v,i)=>assert.equal(questions[800+i][2][questions[800+i][3]],v,`numeric reference ${i}`));
-assert.equal(questions.filter(q=>q[6]==='numeric').length,200);
+assert.equal(questions.filter(q=>q[6]==='numeric').length,0);
 let app=fs.readFileSync(path.join(root,'app.js'),'utf8');
 app=app.replace(/if \(state && !state\.finished && remaining\(\) === 0\) finish\(true\); else home\(\);/,
  'globalThis.testApi={selectedIds,bank,setState:s=>state=s,setHistory:ids=>history=ids};');
@@ -63,4 +61,4 @@ for(const count of [60,100]){
   }
   console.log(`${count}: correct quotas, distinct families, no immediate family repeat; 50 trials`);
 }
-console.log('1000 items: alias regression, unique options, single prompts, numeric references passed');
+console.log('400 items: alias regression, unique options and single prompts passed');

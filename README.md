@@ -1,6 +1,6 @@
 # Simulacro SERUMS de enfermería
 
-Aplicación para celular y laptop con 1000 preguntas individuales. Modalidades: 60 preguntas en 30 minutos y 100 en 90 minutos. Cuatro alternativas, marcado para revisión, guardado local y explicación al finalizar.
+Aplicación para celular y laptop con 400 preguntas individuales. Modalidades: 60 preguntas en 30 minutos y 100 en 90 minutos. Cuatro alternativas, marcado para revisión, guardado local y explicación al finalizar.
 
 ## Contenido y distribución
 
@@ -8,7 +8,7 @@ El temario SERUMS 2026-II de enfermería proporcionado define los apartados; el 
 
 Cada intento contiene 60 % de enfermería y cuidado integral, 20 % de salud pública/comunitaria, 10 % de gestión, 5 % de ética/interculturalidad y 5 % de investigación, mezclados.
 
-El banco contiene 330 preguntas de la base revisada, 470 nuevos casos o preguntas conceptuales y 200 aplicaciones cuantitativas con datos distintos (100 de procedimientos de enfermería y 100 de epidemiología). Los 200 ítems cuantitativos son variantes de ocho familias de cálculo. En un intento se elige como máximo un ítem de cada familia; el mismo criterio se aplica a las familias de casos. Por ello, los cálculos no dominan el examen.
+La edición ligera contiene 330 preguntas de la base revisada y 70 casos adicionales. Se conservan todos los apartados del temario y se reduce la cantidad de variantes por familia. El navegador descarga un único archivo de preguntas de aproximadamente 162 kB.
 
 Se evita repetir la familia del intento inmediatamente anterior. El historial local prioriza preguntas todavía no utilizadas antes de volver a las ya vistas. El avance y el historial se guardan en el navegador; no se sincronizan entre dispositivos.
 
@@ -26,4 +26,4 @@ node scripts/validate_bank.cjs
 python scripts/coverage_audit.py
 ```
 
-`editorial_review.py` contiene decisiones por pregunta. `question_families.py` contiene los casos nuevos. `option-aliases.json` permite detectar siglas y nombres equivalentes; no sustituye la revisión del significado clínico. El control incluye el caso de regresión ASIS, opciones distintas, una sola pregunta por ítem, claves numéricas de referencia y cuotas de selección.
+`editorial_review.py` contiene decisiones por pregunta. `question_families.py` contiene los casos nuevos. `option-aliases.json` permite detectar siglas y nombres equivalentes; no sustituye la revisión del significado clínico. El control incluye el caso de regresión ASIS, opciones distintas, una sola pregunta por ítem, cuotas de selección.

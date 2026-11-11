@@ -33,5 +33,5 @@ focal = {q[5] for q in questions}
 missing = [(block, index+1, concept) for block, concepts in MAPPING.items()
            for index, concept in enumerate(concepts) if concept not in focal]
 assert not missing, missing
-assert len(questions) == 1000
-print('92/92 syllabus headings represented in the 1000-question bank')
+assert len(questions) == 400
+print('92/92 syllabus headings represented in the 400-question bank')

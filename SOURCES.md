@@ -31,3 +31,8 @@ Estas preguntas sirven para practicar conceptos. Las indicaciones clínicas, eda
 - [OpenStax, Clinical Nursing Skills: Dosing](https://openstax.org/books/clinical-nursing-skills/pages/11-2-dosing): fórmulas para aplicaciones matemáticas de procedimientos de enfermería. Los enunciados dan una orden hipotética ya validada; evalúan cálculo, no recomiendan regímenes farmacológicos.
 
 Las 200 aplicaciones cuantitativas tienen datos distintos dentro de ocho familias; no se cuentan cambios de nombre o dobles preguntas como ítems adicionales. Las familias se limitan a una aparición por intento.
+
+
+## Edición ligera de 400 preguntas
+
+La edición publicada se redujo a 400 preguntas por solicitud del usuario: 330 preguntas revisadas y 70 casos adicionales. Conserva los 92 apartados del temario. Las familias y aplicaciones cuantitativas no seleccionadas permanecen únicamente como material de edición; no se descargan en la aplicación.

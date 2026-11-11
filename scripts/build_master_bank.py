@@ -163,7 +163,26 @@ for k in range(25):
     numeric('Epidemiología',7,f'Una prueba produce {tp} verdaderos positivos, {fn} falsos negativos, {tn} verdaderos negativos y {fp} falsos positivos. ¿Cuál es su {names[target]}, en porcentaje?',metrics[target],[metrics[i] for i in range(4) if i!=target],f'{names[target].capitalize()} = {nums[target]}/{denoms[target]} × 100 = {fmt(metrics[target])} %.','Interpretación de tabla diagnóstica')
 
 assert len(items)==1000,len(items)
-assert len({q[1] for q in items})==1000,'Repeated stems'
+# The published edition retains every source topic and reduces repeated variants.
+base_items=items[:330]
+case_items=items[330:800]
+first_cases=[]
+seen_families=set()
+for q in case_items:
+    if q[5] not in seen_families:
+        first_cases.append(q)
+        seen_families.add(q[5])
+clinical={'Enfermería','Curso de vida','Problemas prioritarios'}
+second_cases=[]
+second_families=set()
+for q in case_items:
+    if q[0] in clinical and q not in first_cases and q[5] not in second_families:
+        second_cases.append(q)
+        second_families.add(q[5])
+        if len(second_cases)==23: break
+items=base_items+first_cases+second_cases
+assert len(items)==400,len(items)
+assert len({q[1] for q in items})==400,'Repeated stems'
 for i,q in enumerate(items):
     assert len(q[2])==4 and len({canonical(x) for x in q[2]})==4,('Equivalent choices',i,q[2])
     assert q[3] in range(4) and q[4]
@@ -171,4 +190,4 @@ for i,q in enumerate(items):
 out=ROOT/'questions-master.js'
 out.write_text('window.QUESTIONS = '+json.dumps(items,ensure_ascii=False,separators=(',',':'))+';\n',encoding='utf-8')
 (ROOT/'scripts/option-aliases.json').write_text(json.dumps(ALIASES,ensure_ascii=False,indent=2),encoding='utf-8')
-print(f'1000 single questions: 330 revised, 470 case questions, 200 quantitative applications. Revised choice sets: {len(repairs)}')
+print(f'400 single questions: 330 revised and 70 additional cases. Revised choice sets: {len(repairs)}. Bank: {out.stat().st_size} bytes')
