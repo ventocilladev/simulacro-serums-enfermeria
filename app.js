@@ -1,12 +1,21 @@
 (function () {
   'use strict';
-  const KEY = 'serums-simulacro-v8';
+  const KEY = 'serums-simulacro-v9';
   const LETTERS = ['A', 'B', 'C', 'D'];
   const app = document.getElementById('app');
   const bank = window.QUESTIONS.map((q, id) => ({ id, category: q[0], stem: q[1], choices: q[2], correct: q[3], why: q[4], concept: q[5] ?? id }));
   let state = read();
   let current = 0;
   let tick;
+  const HISTORY_KEY = KEY + '-history';
+  let history = readHistory();
+  function readHistory() {
+    try {
+      const ids = JSON.parse(localStorage.getItem(HISTORY_KEY));
+      return Array.isArray(ids) ? [...new Set(ids.filter(id => Number.isInteger(id) && id >= 0 && id < bank.length))] : [];
+    } catch { return []; }
+  }
+
 
   function escape(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
   function shuffle(values) { const a = [...values]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
@@ -45,7 +54,8 @@
     const previous = new Set((state?.ids || []).map(id => bank[id]?.concept));
     const chosen = [], concepts = new Set();
     for (const [name, quota] of Object.entries(quotas)) {
-      const available = shuffle(bank.filter(q => block(q) === name));
+      const recency = new Map(history.map((id, index) => [id, bank.length - index]));
+      const available = shuffle(bank.filter(q => block(q) === name)).sort((a,b) => (recency.get(a.id) || 0) - (recency.get(b.id) || 0));
       const preferred = available.filter(q => !previous.has(q.concept));
       const fallback = available.filter(q => previous.has(q.concept));
       let added = 0;
@@ -59,6 +69,8 @@
   function start(count) {
     if (![60, 100].includes(count) || bank.length < count) return;
     const ids = selectedIds(count);
+    history = [...ids, ...history.filter(id => !ids.includes(id))].slice(0, bank.length);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
     state = { ids, answers: ids.map(() => null), flagged: ids.map(() => false), orders: ids.map(() => shuffle([0, 1, 2, 3])), started: Date.now(), minutes: count === 60 ? 30 : 90, finished: false };
     current = 0; save(); renderExam(); showQuestion();
   }
@@ -67,7 +79,7 @@
     const resume = state && !state.finished;
     const completed = state && state.finished;
     app.innerHTML = `<section class="hero"><div class="hero-copy"><span class="eyebrow">SIMULACRO SERUMS · ENFERMERÍA</span><h1>De tu amorshito<br><em>para ti.</em></h1><p class="dedication">Tú puedes. Vamos por ese 20 de nota.</p></div><div class="hero-art" aria-hidden="true"><div class="art-card"><span class="art-kicker">SIMULACRO</span><div class="art-number">01<span>/ 60</span></div><div class="art-lines"><i></i><i></i><i></i></div><div class="art-choice selected">A <span></span></div><div class="art-choice">B <span></span></div><div class="art-choice">C <span></span></div></div></div></section>
-    <section class="setup card"><div class="section-title"><div><span class="eyebrow dark">ELIGE TU EXAMEN</span><h2>Simulacro</h2></div><span class="sparkle" aria-hidden="true">✦</span></div><div class="exam-choices"><button class="exam-choice" data-count="60"><span class="choice-number">60</span><span class="choice-copy"><strong>60 preguntas</strong><small>30 minutos</small></span><span class="choice-arrow">→</span></button><button class="exam-choice" data-count="100"><span class="choice-number">100</span><span class="choice-copy"><strong>100 preguntas</strong><small>90 minutos</small></span><span class="choice-arrow">→</span></button></div>${resume ? '<button class="secondary resume-button" id="resume">Continuar examen guardado</button>' : ''}${completed ? '<button class="secondary resume-button" id="last">Ver último resultado</button>' : ''}<p class="helper">Banco de 330 preguntas individuales. 60 % de enfermería y cuidado integral en cada intento. El tiempo comienza al iniciar y tus respuestas se guardan en este navegador.</p></section>`;
+    <section class="setup card"><div class="section-title"><div><span class="eyebrow dark">ELIGE TU EXAMEN</span><h2>Simulacro</h2></div><span class="sparkle" aria-hidden="true">✦</span></div><div class="exam-choices"><button class="exam-choice" data-count="60"><span class="choice-number">60</span><span class="choice-copy"><strong>60 preguntas</strong><small>30 minutos</small></span><span class="choice-arrow">→</span></button><button class="exam-choice" data-count="100"><span class="choice-number">100</span><span class="choice-copy"><strong>100 preguntas</strong><small>90 minutos</small></span><span class="choice-arrow">→</span></button></div>${resume ? '<button class="secondary resume-button" id="resume">Continuar examen guardado</button>' : ''}${completed ? '<button class="secondary resume-button" id="last">Ver último resultado</button>' : ''}<p class="helper">Banco de 1000 preguntas individuales. 60 % de enfermería y cuidado integral en cada intento. El tiempo comienza al iniciar y tus respuestas se guardan en este navegador.</p></section>`;
     document.querySelectorAll('[data-count]').forEach(el => el.onclick = () => { if (resume && !confirm('Hay un examen en curso. ¿Empezar otro y reemplazarlo?')) return; start(Number(el.dataset.count)); });
     if (resume) document.getElementById('resume').onclick = () => { current = Math.max(0, state.answers.findIndex(a => a === null)); renderExam(); showQuestion(); };
     if (completed) document.getElementById('last').onclick = renderResults;

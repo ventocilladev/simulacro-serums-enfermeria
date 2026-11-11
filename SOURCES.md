@@ -19,3 +19,15 @@ Fuentes oficiales de contraste para otros apartados reforzados:
 - [Apoyo alimentario para personas afectadas por tuberculosis](https://www.minsa.gob.pe/presupuestales/doc2021/ANEXO2_3.pdf).
 
 Estas preguntas sirven para practicar conceptos. Las indicaciones clínicas, edades y protocolos se deben contrastar siempre con las normas vigentes.
+
+
+## Revisión del banco de 1000 preguntas
+
+- [Exámenes oficiales MINSA SERUMS 2025-II](https://www.gob.pe/institucion/minsa/informes-publicaciones/7084125-examenes-de-la-evaluacion-para-el-serums-2025-ii): referencia de estilo y distractores.
+- [Claves y cuadernillos SERUMS 2026-I](https://www.gob.pe/institucion/minsa/informes-publicaciones/8053031-claves-de-respuesta-de-la-evaluacion-para-el-serums-2026-i): contraste del formato de los PDF entregados.
+- [Norma técnica MINSA de tuberculosis 221-2024](https://bvs.minsa.gob.pe/local/MINSA/7667.pdf): contraste de conceptos de detección, tratamiento preventivo y control.
+- [Tamizaje neonatal universal MINSA](https://www.gob.pe/115901-informacion-sobre-el-proceso-integral-de-tamizaje-neonatal-universal): objetivos de la prueba de talón, oximetría y seguimiento.
+- [Guías de ginecología y obstetricia del Hospital Cayetano Heredia, 2025](https://cdn.www.gob.pe/uploads/document/file/7812199/6592927-gpc_departamento_gineco-obstetricia_hch_-2025.pdf?v=1742580509): criterio de menopausia.
+- [OpenStax, Clinical Nursing Skills: Dosing](https://openstax.org/books/clinical-nursing-skills/pages/11-2-dosing): fórmulas para aplicaciones matemáticas de procedimientos de enfermería. Los enunciados dan una orden hipotética ya validada; evalúan cálculo, no recomiendan regímenes farmacológicos.
+
+Las 200 aplicaciones cuantitativas tienen datos distintos dentro de ocho familias; no se cuentan cambios de nombre o dobles preguntas como ítems adicionales. Las familias se limitan a una aparición por intento.
