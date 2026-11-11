@@ -86,7 +86,8 @@ ANSWER_OVERRIDES = {
     276:'Evitar tabaco y mantener hábitos saludables'
     ,76:'Cuidado integral del niño',77:'Cuidado integral del adolescente',
     78:'Cuidado integral del adulto',79:'Valoración funcional geriátrica',
-    226:'Cuidado integral del adolescente',227:'Cuidado integral del joven'
+    226:'Cuidado integral del adolescente',227:'Cuidado integral del joven',
+    50:'Temporalidad',191:'Agente comunitario',192:'Determinante ambiental'
 }
 
 # Each pool keeps all alternatives within the same decision family.
@@ -191,7 +192,17 @@ for ids, options in [
     ([72,213,214,215], ['Evaluación de cadena de frío','Inmovilización de biológicos','Monitoreo de temperatura','Reacondicionamiento de paquetes fríos']),
     ([76,77,78,79,226,227,228,229,230], ['Cuidado integral del niño','Cuidado integral del adolescente','Cuidado integral del joven','Cuidado integral del adulto','Cuidado integral del adulto mayor','Valoración funcional geriátrica']),
     ([142], ['Limitar la propagación','Detectar precozmente nuevos casos','Evitar la exposición inicial','Reducir secuelas después de la infección']),
+    ([57], ['Esterilización','Antisepsia','Limpieza mecánica','Desinfección de alto nivel']),
+    ([141], ['Desinfección','Esterilización','Antisepsia','Limpieza mecánica']),
     ([218], ['Inmunizaciones','Evaluación del desarrollo','Consejería nutricional','Tamizaje de anemia']),
+    ([50], ['Temporalidad de la exposición','Consistencia entre estudios','Gradiente biológico','Plausibilidad biológica']),
+    ([51], ['Transición demográfica','Transición epidemiológica','Envejecimiento individual','Migración neta']),
+    ([190], ['Atención integral familiar','Atención individual episódica','Vigilancia comunitaria','Intervención intersectorial']),
+    ([191], ['Agente comunitario','Profesional de salud','Autoridad municipal','Representante institucional']),
+    ([192], ['Determinante ambiental','Determinante estructural','Factor psicosocial','Barrera organizacional']),
+    ([217], ['Desde los cuatro meses','Desde los seis meses de edad','Desde los ocho meses','Desde los doce meses']),
+    ([219], ['Derivación y seguimiento oportunos','Observación sin seguimiento','Repetir control sin evaluación','Alta de CRED sin plan']),
+    ([246], ['Enfermedades no transmisibles','Enfermedades metaxénicas','Enfermedades zoonóticas','Infecciones oportunistas']),
 ]:
     for index in ids:
         POOL_FOR_ID[index] = options
@@ -273,7 +284,7 @@ for rank in range(20):
         a_case = case(source[i]); b_case = case(source[j]); assert a_case and b_case
         stem = forms[rank % len(forms)].format(a=a_case[0].lower()+a_case[1:], b=b_case[0].lower()+b_case[1:])
         explanation = f'Primera situación: {source[i][4]} Segunda situación: {source[j][4]}'
-        items.append([source[i][0], stem, choices, 0, explanation, i])
+        items.append([source[i][0], stem, choices, 0, explanation, i, j])
         if len(items) == 1000:
             break
     if len(items) == 1000:
