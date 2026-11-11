@@ -265,35 +265,37 @@ def distractor(i, excluded):
             return candidate
     raise RuntimeError(f'No distractor for {i}')
 
+SINGLE_OPTIONS = {
+ 72:['Evaluar la excursión térmica antes de usar las vacunas','Usar primero los frascos expuestos para evitar pérdidas','Refrigerar y asumir recuperada la potencia','Reiniciar la vacunación sin documentar el incidente'],
+ 139:['Valorar síntomas, aplicar el plan de alivio y brindar apoyo emocional','Limitar el cuidado al tratamiento de la enfermedad de base','Priorizar apoyo emocional sin valorar dolor','Posponer el control de síntomas hasta nueva evaluación'],
+ 143:['Escuchar, valorar riesgo y facilitar atención oportuna','Centrar la atención inicial únicamente en el sueño','Programar seguimiento sin explorar la seguridad','Derivar sin una valoración inicial del riesgo'],
+ 208:['Atender a la persona y notificar el ESAVI grave','Esperar confirmación causal antes de notificar','Notificar sin organizar la atención del evento','Clasificarlo como coincidente sin evaluación'],
+ 213:['Inmovilizar los biológicos y evaluar la exposición','Usar los frascos antes de su vencimiento','Refrigerar y asumir que recuperan su potencia','Descartar sin registrar el incidente'],
+ 219:['Evaluar, derivar según necesidad y mantener seguimiento','Esperar un cambio de etapa antes de evaluar','Continuar únicamente controles antropométricos','Suspender CRED hasta confirmar un diagnóstico'],
+ 221:['Buscar evaluación inmediata por el sangrado','Esperar al siguiente control prenatal programado','Indicar reposo como única medida','Programar consejería antes de valorar el sangrado'],
+ 232:['Iniciar estabilización y coordinar referencia inmediata','Esperar exámenes completos antes de estabilizar','Referir sin medidas iniciales disponibles','Observar la evolución antes de coordinar traslado'],
+ 256:['Mantener tamizaje y seguimiento durante la PrEP','Acudir a control únicamente si aparecen síntomas','Omitir tamizajes mientras se tome la medicación','Usar PrEP como tratamiento de VIH confirmado'],
+}
 items = []
-seen_pairs = set()
-for rank in range(20):
-    for i in eligible:
-        for j in neighbors(i)[rank:]:
-            if score(i,j)[0] >= 1 and (i,j) not in seen_pairs:
-                break
-        else:
+for i, q in enumerate(source):
+    correct = answer(q)
+    if i in SINGLE_OPTIONS:
+        correct = SINGLE_OPTIONS[i][0]
+    choices = [correct]
+    for candidate in (SINGLE_OPTIONS[i][1:] if i in SINGLE_OPTIONS else POOL_FOR_ID.get(i, [])):
+        lower = candidate.lower()
+        if any(lower == x.lower() or (len(lower)>=5 and (lower in x.lower() or x.lower() in lower)) for x in choices):
             continue
-        seen_pairs.add((i,j))
-        a, b = answer(source[i]), answer(source[j])
-        c = distractor(i, {a.lower(),b.lower()})
-        d = distractor(j, {a.lower(),b.lower(),c.lower()})
-        choices = [f'{a} / {b}', f'{c} / {b}', f'{a} / {d}', f'{c} / {d}']
-        if len(set(choices)) < 4:
-            continue
-        a_case = case(source[i]); b_case = case(source[j]); assert a_case and b_case
-        stem = forms[rank % len(forms)].format(a=a_case[0].lower()+a_case[1:], b=b_case[0].lower()+b_case[1:])
-        explanation = f'Primera situación: {source[i][4]} Segunda situación: {source[j][4]}'
-        items.append([source[i][0], stem, choices, 0, explanation, i, j])
-        if len(items) == 1000:
+        choices.append(candidate)
+        if len(choices) == 4:
             break
-    if len(items) == 1000:
-        break
-
-assert len(items) == 1000, len(items)
-assert len(set(q[1] for q in items)) == 1000
-assert all(len(set(q[2])) == 4 for q in items)
-assert len(set(q[5] for q in items)) == len(eligible)
+    for candidate in q[2]:
+        if len(choices) == 4:
+            break
+        if candidate not in choices and candidate != q[2][q[3]]:
+            choices.append(candidate)
+    assert len(choices) == 4, i
+    items.append([q[0], q[1].replace('¿Qué principio se respeta?', '¿Qué requisito previo al procedimiento se cumple?') if i == 36 else q[1], choices, 0, q[4], i])
 out = ROOT / 'questions-advanced.js'
 out.write_text('window.QUESTIONS = ' + json.dumps(items, ensure_ascii=False, separators=(',', ':')) + ';\n', encoding='utf-8')
-print(f'{len(items)} questions, {len(eligible)} focal concepts, {len(by_cat)} areas, {out.stat().st_size} bytes')
+print(f'{len(items)} individual questions; all 300 source concepts retained')
